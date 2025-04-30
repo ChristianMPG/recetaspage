@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Button, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import {
   Firestore,
   collection,
@@ -9,10 +10,6 @@ import {
   doc
 } from 'firebase/firestore';
 import { db } from '../.env/firebaseConfig'; // Assuming this is where your Firestore instance is initialized
-
-const inputStyle = { margin: '5px', padding: '5px', borderRadius: '5px', border: '1px solid #ccc' };
-const buttonStyle = { margin: '5px', padding: '8px 12px', borderRadius: '5px', border: 'none', backgroundColor: '#007bff', color: 'white', cursor: 'pointer' };
-const containerStyle = { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' };
 
 interface Recipe {
   id?: string; // Optional id for new recipes not yet in Firestore
@@ -131,91 +128,100 @@ const RecipeesCRUD: React.FC = () => {
   }, []);
 
   return (
-    <div style={containerStyle}>
-      <h2>Recipes Management</h2>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Recipes Management</Text>
 
       {/* Input fields */}
-      <input
-        type="text"
+      <TextInput
         placeholder="Recipe's Name"
         value={name}
-        onChange={(e) => setName(e.target.value)}
-        style={inputStyle}
+        onChangeText={(text) => setName(text)}
+        style={styles.input}
       />
-      <div>
-        <label>Ingredients:</label>
+      <View>
+        <Text style={styles.label}>Ingredients:</Text>
         {ingredients.map((ingredient, index) => {
           const [id, value] = ingredient.split(':');
           return (
-            <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
-              <input
-                type="string"
+            <View key={index} style={styles.ingredientRow}>
+              <TextInput
                 value={value}
-                onChange={(e) => updateIngredient(index, e.target.value)}
-                style={{ ...inputStyle, marginRight: '5px' }}
+                onChangeText={(text) => updateIngredient(index, text)}
+                style={[styles.input, styles.ingredientInput]}
               />
-              <button type="button" onClick={() => deleteIngredient(index)} style={{ ...buttonStyle, backgroundColor: '#dc3545' }}>
-                Delete
-              </button>
-            </div>
+              <TouchableOpacity onPress={() => deleteIngredient(index)} style={styles.deleteButton}>
+                <Text style={styles.deleteButtonText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
           );
         })}
-        <button type="button" onClick={addIngredient} style={buttonStyle}>
-          Add Ingredient
-        </button>
-      </div>
-      <textarea
+        <Button title="Add Ingredient" onPress={addIngredient} />
+      </View>
+      <TextInput
         placeholder="Instructions"
         value={instructions}
-        onChange={(e) => setInstructions(e.target.value)}
-        style={{ ...inputStyle, height: '120px' }}
+        onChangeText={(text) => setInstructions(text)}
+        style={[styles.input, styles.textArea]}
+        multiline
       />
 
       {/* Action buttons */}
       {!selectedRecipeId ? (
-        <button onClick={() => { createRecipe(); clearInputs(); }} style={buttonStyle}>Create</button>
+        <Button title="Create" onPress={() => { createRecipe(); clearInputs(); }} />
       ) : (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <button onClick={() => { updateRecipe(selectedRecipeId, name, ingredients, instructions); clearInputs(); }} style={buttonStyle}>Update</button>
-          <button onClick={() => { deleteRecipe(selectedRecipeId); clearInputs(); }} style={buttonStyle}>Delete</button>
-        </div>
-        
+        <View style={styles.actionButtons}>
+          <Button title="Update" onPress={() => { updateRecipe(selectedRecipeId, name, ingredients, instructions); clearInputs(); }} />
+          <Button title="Delete" onPress={() => { deleteRecipe(selectedRecipeId); clearInputs(); }} />
+        </View>
       )}
 
       {/* Recipe list */}
-      <h3>Recipes</h3>
-      <div style={{ width: '100%', maxWidth: '600px' }}>
-        {recipes.map((recipe) => (
-          <div
-            key={recipe.id}
-            style={{
-              padding: '10px',
-              margin: '5px 0',
-              border: '1px solid #ccc',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              backgroundColor: selectedRecipeId === recipe.id ? '#e0f7fa' : 'white',
-            }}
-            onClick={() => handleRecipeClick(recipe)}
-          >
-            <h4>{recipe.name}</h4>
-            <p style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
-              <strong>Ingredients:</strong>
-              {recipe.ingredients.map((ingredient, index) => {
-                  const [id, value] = ingredient.split(':');
-                  return (
-                    <span key={index} style={{ display: 'block', marginLeft: '20px' }}>{value}</span>
-                  );
-                })}
-            </p>
-             <p style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
-              <strong>Instructions:</strong> {recipe.instructions}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
+      <Text style={styles.subtitle}>Recipes</Text>
+      {recipes.map((recipe) => (
+        <TouchableOpacity
+          key={recipe.id}
+          style={[
+            styles.recipeCard,
+            selectedRecipeId === recipe.id && styles.selectedRecipeCard,
+          ]}
+          onPress={() => handleRecipeClick(recipe)}
+        >
+          <Text style={styles.recipeTitle}>{recipe.name}</Text>
+          <Text>
+            <Text style={styles.boldText}>Ingredients:</Text>
+            {recipe.ingredients.map((ingredient, index) => {
+              const [id, value] = ingredient.split(':');
+              return (
+                <Text key={index} style={styles.ingredientText}>{value}</Text>
+              );
+            })}
+          </Text>
+          <Text>
+            <Text style={styles.boldText}>Instructions:</Text> {recipe.instructions}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: { padding: 20, alignItems: 'center' },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
+  input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5, padding: 10, marginBottom: 10, width: '100%' },
+  label: { fontWeight: 'bold', marginBottom: 5 },
+  ingredientRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
+  ingredientInput: { flex: 1, marginRight: 10 },
+  deleteButton: { backgroundColor: '#dc3545', padding: 10, borderRadius: 5 },
+  deleteButtonText: { color: 'white' },
+  textArea: { height: 100, textAlignVertical: 'top' },
+  actionButtons: { flexDirection: 'row', justifyContent: 'space-between', width: '100%' },
+  subtitle: { fontSize: 20, fontWeight: 'bold', marginVertical: 20 },
+  recipeCard: { padding: 15, borderWidth: 1, borderColor: '#ccc', borderRadius: 5, marginBottom: 10, width: '100%' },
+  selectedRecipeCard: { backgroundColor: '#e0f7fa' },
+  recipeTitle: { fontSize: 18, fontWeight: 'bold' },
+  boldText: { fontWeight: 'bold' },
+  ingredientText: { marginLeft: 10 },
+});
 
 export default RecipeesCRUD;

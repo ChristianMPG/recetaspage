@@ -6,18 +6,17 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { View, Text, ScrollView } from "react-native";
 
-   // Por ejemplo, en app/(tabs)/index.tsx o en otro componente donde desees usarlo.
 import React from 'react';
-import RecipeesCRUD from '../../components/RecipeesCRUD'; // Asegúrate que la ruta es correcta
-   
+import RecipeesCRUD from '../../components/RecipeesCRUD';    
       const MyPage: React.FC = () => {
         return (
-          <div>
-            {/* ... otro contenido ... */}
+          <ScrollView>
+            
             <RecipeesCRUD />
-            {/* ... otro contenido ... */}
-          </div>
+            
+          </ScrollView>
         );
       };
    
