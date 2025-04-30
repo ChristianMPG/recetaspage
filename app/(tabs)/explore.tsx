@@ -13,11 +13,9 @@ import RecipeesCRUD from '../../components/RecipeesCRUD'; // Asegúrate que la r
    
       const MyPage: React.FC = () => {
         return (
-          <div>
-            {/* ... otro contenido ... */}
+       
             <RecipeesCRUD />
-            {/* ... otro contenido ... */}
-          </div>
+
         );
       };
    
