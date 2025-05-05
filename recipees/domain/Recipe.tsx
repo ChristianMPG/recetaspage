@@ -3,7 +3,9 @@ export class Recipe {
       public id: string,
       public name: string,
       public ingredients: string[],
-      public instructions: string
+      public category: string,
+      public instructions: string,
+      public imageUrl: string 
     ) {}
   
     isValid(): boolean {
@@ -19,4 +21,3 @@ export class Recipe {
       return `${this.name} - ${this.ingredients.length} ingredientes`;
     }
   }
-  

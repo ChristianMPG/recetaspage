@@ -1,5 +1,4 @@
 import { View, Text, StyleSheet, TextInput, Image, ScrollView, FlatList } from 'react-native';
-import { Link } from 'expo-router';
 
 export default function HomeScreen() {
   return (
