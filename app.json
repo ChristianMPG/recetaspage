@@ -12,10 +12,12 @@
       "supportsTablet": true
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.recetaspage"
     },
     "web": {
       "bundler": "metro",
@@ -23,6 +25,21 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      [
+        "react-native-fbsdk-next",
+        {
+          "appID": "686782897506008",
+          "clientToken": "cc6ed995dc9ebae100bf1e98466d9af3",
+          "displayName": "RN SDK Demo",
+          "scheme": "fb686782897506008",
+          "advertiserIDCollectionEnabled": false,
+          "autoLogAppEventsEnabled": false,
+          "isAutoInitEnabled": true,
+          "iosUserTrackingPermission": "This identifier will be used to deliver personalized ads to you."
+        }
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
       "expo-router",
       [
         "expo-splash-screen",
@@ -36,6 +53,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "Scheme": [
+      "recetaspage",
+      "fb686782897506008"
+    ]
   }
 }
+
+
+

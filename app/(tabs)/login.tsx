@@ -1,16 +1,34 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { Link } from 'expo-router';
+import * as Facebook from 'expo-facebook';
+import React, { useEffect } from 'react';
+import { Button } from 'react-native';
+import { onFacebookButtonPress } from '../../components/onFacebookButtonPress'; // Asegúrate de que la ruta sea correcta
 
 const LoginScreen = () => {
+  useEffect(() => {
+    if (Platform.OS !== 'web') {
+      const initializeFacebook = async () => {
+        await Facebook.initializeAsync({
+          appId: '686782897506008', // reemplaza por tu app id
+          // Opcional: puedes añadir otros parámetros como displayName o esquema si fuera necesario.
+        });
+      };
+
+      initializeFacebook();
+    }
+  }, []);
+
   return (
     <View style={styles.container}>
       
       <Text style={styles.welcomeText}>¡Bienvenido a cocina más!</Text>
       <Text style={styles.descriptionText}>Inicia sesión y disfruta de la experiencia</Text>
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Iniciar sesión con Facebook</Text>
-      </TouchableOpacity>
+      <Button
+        title="Facebook Sign-In"
+        onPress={() => onFacebookButtonPress().then(() => console.log('Signed in with Facebook!'))}
+      />
 
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Iniciar sesión con Google</Text>
